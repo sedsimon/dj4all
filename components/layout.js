@@ -35,7 +35,7 @@ export default function Layout({ children}) {
         <main>
           {children}
           <Stack direction="row" spacing="2">
-            <Link href="/pages/options/0/outcomes">Next</Link>
+            <Link href="/options/0/outcomes">Next</Link>
           </Stack>
         </main>
       </Box>

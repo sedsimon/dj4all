@@ -13,15 +13,16 @@ import Stack from '@mui/material/Stack'
 import {cloneDeep} from 'lodash'
 import { ClickAwayListener } from "@mui/material"
 import {red,green} from "@mui/material/colors"
+import { nanoid } from "nanoid"
 
 const initialOptions = [
   {
-    id: 0,
+    id: nanoid(),
     option: "Do Nothing",
     edit: false
   },
   {
-    id: 1,
+    id: nanoid(),
     option: "Invest $50k",
     edit: false
   }
@@ -36,7 +37,7 @@ export default function Questions({children}) {
   
 
   function addNewOption() {
-    const id = options.length;
+    const id = nanoid();
     setOptions(options.concat(
       {
         id,
@@ -47,18 +48,18 @@ export default function Questions({children}) {
     optionStore[id] = "";
   }
 
-  function handleSave(id) {
+  function handleSave(index) {
     const newOptions = cloneDeep(options);
-    if (newOptions[id].option == "") {
-      handleDelete(id);
+    if (newOptions[index].option == "") {
+      handleDelete(index);
     } else {
-      newOptions[id].edit = false;
+      newOptions[index].edit = false;
       setOptions(newOptions);
-      delete optionStore[id];
+      delete optionStore[newOptions[index].id];
     }
   }
 
-  function handleListItemClick(option,id){
+  function handleListItemClick(option,index){
     // loop through options and cancel the others
     const newOptions = options.map((elem) => {
       let newOption = elem.option;
@@ -72,58 +73,58 @@ export default function Questions({children}) {
         edit: false
       }
     });
-    newOptions[id].edit = true;
+    newOptions[index].edit = true;
     setOptions(newOptions);
-    optionStore[id] = option;
+    optionStore[newOptions[index].id] = option;
   }
 
-  function handleCancel(id) {
+  function handleCancel(index) {
     const newOptions = cloneDeep(options);
-    if (optionStore[id] == "") {
-      newOptions.splice(id,1);
+    if (optionStore[newOptions[index].id] == "") {
+      newOptions.splice(index,1);
     } else {
-      newOptions[id].edit = false;
-      newOptions[id].option = optionStore[id];
+      newOptions[index].edit = false;
+      newOptions[index].option = optionStore[newOptions[index].id];
     }
-    delete optionStore[id];
+    delete optionStore[newOptions[index].id];
     setOptions(newOptions);
   }
 
-  function handleChange(e,id) {
+  function handleChange(e,index) {
     const newOptions = cloneDeep(options);
-    newOptions[id].option = e.target.value;
+    newOptions[index].option = e.target.value;
     setOptions(newOptions);
   }
 
-  function handleDelete(id) {
+  function handleDelete(index) {
     const newOptions = cloneDeep(options);
-    newOptions.splice(id,1);
+    newOptions.splice(index,1);
     setOptions(newOptions);
   }
 
-  function handleKeyDown(e,id) {
+  function handleKeyDown(e,index) {
     if (e.key == "Escape") {
-      handleCancel(id);
+      handleCancel(index);
     } else if (e.key == "Enter") {
-      handleSave(id);
+      handleSave(index);
     }
   }
 
   return (
     <>
     <List>
-      {options.map(({id,option,edit}) => 
+      {options.map(({id,option,edit},index) => 
         edit? 
-        <ClickAwayListener onClickAway={() => handleCancel(id)} key={id}>
+        <ClickAwayListener onClickAway={() => handleCancel(index)} key={id}>
           <Stack direction="row" spacing="2">
             <TextField label="Option" variant="outlined"
-              autoComplete="off" value={option} onChange={(e) => handleChange(e,id)}
-              onKeyDown={(e) => handleKeyDown(e,id)}
+              autoComplete="off" value={option} onChange={(e) => handleChange(e,index)}
+              onKeyDown={(e) => handleKeyDown(e,index)}
               autoFocus={true}/>
-            <IconButton aria-label="cancel" onClick={() => handleCancel(id)}>
+            <IconButton aria-label="cancel" onClick={() => handleCancel(index)}>
               <CloseIcon sx={{ color: red[500] }}/>
             </IconButton>
-            <IconButton aria-label="save" onClick={() => handleSave(id)}>
+            <IconButton aria-label="save" onClick={() => handleSave(index)}>
               <CheckIcon sx={{ color: green[500] }}/>
             </IconButton>
           </Stack>
@@ -132,13 +133,13 @@ export default function Questions({children}) {
         <ListItem
             key={id}
             secondaryAction={
-              <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(id)}>
+              <IconButton edge="end" aria-label="delete" onClick={() => handleDelete(index)}>
                 <DeleteIcon />
               </IconButton>
             }
             disablePadding
           >
-          <ListItemButton onClick={() => handleListItemClick(option,id)}>
+          <ListItemButton onClick={() => handleListItemClick(option,index)}>
             <ListItemText primary={option}/>
           </ListItemButton>
         </ListItem>

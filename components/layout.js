@@ -1,6 +1,4 @@
 import Head from 'next/head';
-import Link from 'next/link';
-import Stack from '@mui/material/Stack'
 import Container from '@mui/material/Container'
 import Box from '@mui/material/Box'
 

@@ -15,91 +15,76 @@ import { ClickAwayListener } from "@mui/material"
 import {red,green} from "@mui/material/colors"
 import { nanoid } from "nanoid"
 
-const initialOptions = [
-  {
-    id: nanoid(),
-    option: "Do Nothing",
-    edit: false
-  },
-  {
-    id: nanoid(),
-    option: "Invest $50k",
-    edit: false
-  }
-]
+const itemStore = {}
 
-const optionStore = {}
+export default function Questions({initialItems}) {
 
-export default function Questions({children}) {
+  const [items, setItems] = useState(initialItems)
 
-  const [options, setOptions] = useState(initialOptions)
-
-  
-
-  function addNewOption() {
+  function addNewItem() {
     const id = nanoid();
-    setOptions(options.concat(
+    setItems(items.concat(
       {
         id,
-        option: "",
+        text: "",
         edit: true
       }
     ));
-    optionStore[id] = "";
+    itemStore[id] = "";
   }
 
   function handleSave(index) {
-    const newOptions = cloneDeep(options);
-    if (newOptions[index].option == "") {
+    const newItems = cloneDeep(items);
+    if (newItems[index].text == "") {
       handleDelete(index);
     } else {
-      newOptions[index].edit = false;
-      setOptions(newOptions);
-      delete optionStore[newOptions[index].id];
+      newItems[index].edit = false;
+      setItems(newItems);
+      delete itemStore[newItems[index].id];
     }
   }
 
-  function handleListItemClick(option,index){
+  function handleListItemClick(text,index){
     // loop through options and cancel the others
-    const newOptions = options.map((elem) => {
-      let newOption = elem.option;
-      if (optionStore[elem.id]) {
-        newOption = optionStore[elem.id];
-        delete optionStore[elem.id];
+    const newItems = items.map((elem) => {
+      let newText = elem.text;
+      if (itemStore[elem.id]) {
+        newText = itemStore[elem.id];
+        delete itemStore[elem.id];
       }
       return {
         id:elem.id,
-        option: newOption,
+        text: newText,
         edit: false
       }
     });
-    newOptions[index].edit = true;
-    setOptions(newOptions);
-    optionStore[newOptions[index].id] = option;
+    newItems[index].edit = true;
+    setItems(newItems);
+    itemStore[newItems[index].id] = text;
   }
 
   function handleCancel(index) {
-    const newOptions = cloneDeep(options);
-    if (optionStore[newOptions[index].id] == "") {
-      newOptions.splice(index,1);
+    const newItems = cloneDeep(items);
+    if (itemStore[newItems[index].id] == "") {
+      newItems.splice(index,1);
     } else {
-      newOptions[index].edit = false;
-      newOptions[index].option = optionStore[newOptions[index].id];
+      newItems[index].edit = false;
+      newItems[index].text = itemStore[newItems[index].id];
     }
-    delete optionStore[newOptions[index].id];
-    setOptions(newOptions);
+    delete itemStore[newItems[index].id];
+    setItems(newItems);
   }
 
   function handleChange(e,index) {
-    const newOptions = cloneDeep(options);
-    newOptions[index].option = e.target.value;
-    setOptions(newOptions);
+    const newItems = cloneDeep(items);
+    newItems[index].text = e.target.value;
+    setItems(newItems);
   }
 
   function handleDelete(index) {
-    const newOptions = cloneDeep(options);
-    newOptions.splice(index,1);
-    setOptions(newOptions);
+    const newItems = cloneDeep(items);
+    newItems.splice(index,1);
+    setItems(newItems);
   }
 
   function handleKeyDown(e,index) {
@@ -113,12 +98,12 @@ export default function Questions({children}) {
   return (
     <>
     <List>
-      {options.map(({id,option,edit},index) => 
+      {items.map(({id,text,edit},index) => 
         edit? 
         <ClickAwayListener onClickAway={() => handleCancel(index)} key={id}>
-          <Stack direction="row" spacing="2">
+          <Stack direction="row" spacing={2}>
             <TextField label="Option" variant="outlined"
-              autoComplete="off" value={option} onChange={(e) => handleChange(e,index)}
+              autoComplete="off" value={text} onChange={(e) => handleChange(e,index)}
               onKeyDown={(e) => handleKeyDown(e,index)}
               autoFocus={true}/>
             <IconButton aria-label="cancel" onClick={() => handleCancel(index)}>
@@ -139,8 +124,8 @@ export default function Questions({children}) {
             }
             disablePadding
           >
-          <ListItemButton onClick={() => handleListItemClick(option,index)}>
-            <ListItemText primary={option}/>
+          <ListItemButton onClick={() => handleListItemClick(text,index)}>
+            <ListItemText primary={text}/>
           </ListItemButton>
         </ListItem>
         
@@ -149,8 +134,7 @@ export default function Questions({children}) {
         
 
     </List>
-    <Button onClick={addNewOption} variant="outlined">Add to List</Button>
-    {children}
+    <Button onClick={addNewItem} variant="outlined">Add to List</Button>
     </>
   )
 }

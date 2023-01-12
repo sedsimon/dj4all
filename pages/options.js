@@ -1,6 +1,6 @@
-import Questions from '../components/questions'
 import { nanoid } from 'nanoid'
-import {Stack, Link} from '@mui/material'
+import {Stack} from '@mui/material'
+import AnswerList from '../components/answerList'
 
 
 const initialItems = [
@@ -19,11 +19,7 @@ const initialItems = [
 export default function Options() {
   return (
     <Stack direction="column" spacing={2}>
-      <Questions initialItems={initialItems}></Questions>
-      <Stack direction="row" spacing={2}>
-        <Link href="/options/0/outcomes">Prev</Link>
-        <Link href="/options/0/outcomes">Next</Link>
-      </Stack>
+      <AnswerList initialItems={initialItems}></AnswerList>
     </Stack>
   )
 }

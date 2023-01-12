@@ -17,7 +17,7 @@ import { nanoid } from "nanoid"
 
 const itemStore = {}
 
-export default function Questions({initialItems}) {
+export default function AnswerList({initialItems}) {
 
   const [items, setItems] = useState(initialItems)
 

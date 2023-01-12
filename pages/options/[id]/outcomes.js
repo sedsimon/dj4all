@@ -1,6 +1,7 @@
+import QuestionContainer from "../../../components/questionContainer"
 
 export default function Outcomes () {
   return (
-    <>Hello</>
+    <QuestionContainer></QuestionContainer>
   )
 }

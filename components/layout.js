@@ -15,6 +15,8 @@ export default function Layout({ children}) {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
+          borderColor: 'black',
+          border: 1
         }}
       >
         <Head>
